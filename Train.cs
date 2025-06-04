@@ -56,7 +56,7 @@ namespace DMBTools
 
             foreach (KeyValuePair<string, bool> pair in _feathers)
             {
-                if (!pair.Value)
+                if (pair.Value)
                 {
                     return true;
                 }
