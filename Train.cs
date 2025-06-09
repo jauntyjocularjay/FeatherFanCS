@@ -26,17 +26,22 @@ namespace DMBTools
     /// </remarks>
     public class Train
     {
-        private Dictionary<Index, bool> _feathers = new Dictionary<Index, bool>();
-        public void Set(Index name, bool state) => _feathers[name] = state;
-        public bool Get(Index name) => _feathers.TryGetValue(name, out var state) && state;
-        public IEnumerable<Index> Names => _feathers.Keys;
-        public IEnumerable<KeyValuePair<Index, bool>> All => _feathers;
+        private Dictionary<string, bool> _feathers = new Dictionary<string, bool>();
+        public void Set(string name, bool state) => _feathers[name] = state;
+        public bool Get(string name) => _feathers.TryGetValue(name, out var state) && state;
+        public IEnumerable<string> Indices => _feathers.Keys;
+        public IEnumerable<KeyValuePair<string, bool>> All => _feathers;
+
+        public void Add(string str, bool boolean)
+        {
+            _feathers.Add(str, boolean);
+        }
 
         public bool And()
         {
             CheckIfEmpty();
 
-            foreach (KeyValuePair<Index, bool> pair in _feathers)
+            foreach (KeyValuePair<string, bool> pair in _feathers)
             {
                 if (!pair.Value)
                 {
@@ -45,7 +50,7 @@ namespace DMBTools
             }
             return true;
         }
-        public bool And(Train subset)
+        public static bool And(Train subset)
         {
             return subset.And();
         }
@@ -54,7 +59,7 @@ namespace DMBTools
         {
             CheckIfEmpty();
 
-            foreach(KeyValuePair<Index, bool> pair in _feathers)
+            foreach (KeyValuePair<string, bool> pair in _feathers)
             {
                 if (pair.Value)
                 {
@@ -63,75 +68,54 @@ namespace DMBTools
             }
             return false;
         }
-        public bool Or(Train subset)
+        public static bool Or(Train subset)
         {
             return subset.Or();
         }
-        Train Subset(Index[] names)
+        public Train Subset(string[] names)
         {
             CheckIfAllIndicesArePresent(names);
 
             Train subset = new Train();
-            foreach (Index name in names)
+            foreach (string name in names)
             {
                 subset._feathers.Add(name, _feathers[name]);
             }
             return subset;
         }
 
-        public Dictionary<Index, bool> ToDictionary()
+        public override string ToString()
         {
-            return new Dictionary<Index, bool>(_feathers);
+            string str = "{\n";
+
+            foreach (var pair in _feathers)
+            {
+                str += $"    \"{pair.Key}\": {pair.Value} \n";
+            }
+
+            str += "}";
+
+            return str;
+        }
+        public Dictionary<string, bool> ToDictionary()
+        {
+            return new Dictionary<string, bool>(_feathers);
         }
         void CheckIfEmpty()
         {
             if (_feathers.Count == 0) throw new InvalidOperationException("Cannot evaluate an empty train.");
         }
-        void CheckIfAllIndicesArePresent(Index[] indices)
+        void CheckIfAllIndicesArePresent(string[] indices)
         {
-            Dictionary<Index, bool>.KeyCollection keys = _feathers.Keys;
-            List<Index> notfound = new List<Index>();
+            Dictionary<string, bool>.KeyCollection keys = _feathers.Keys;
+            List<string> notfound = new List<string>();
 
-            foreach (Index index in indices)
+            foreach (string index in indices)
             {
                 if (!keys.Contains(index)) notfound.Add(index);
             }
 
             if (notfound.Count > 0) throw new InvalidDataException($"The indices: {notfound} were not found in this train.");
-        }
-
-        public readonly struct Index
-        {
-            readonly string _field;
-
-            public Index(string name)
-            {
-                _field = name;
-            }
-
-            readonly public bool Equals(Index i)
-            {
-                return _field == i._field;
-            }
-            readonly public bool Equals(string str)
-            {
-                return _field == str;
-            }
-            readonly override public bool Equals(Object obj)
-            {
-                if ( obj is Index other && _field == other._field )
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            public readonly override int GetHashCode()
-            {
-                return _field != null ? _field.GetHashCode() : 0;
-            }
         }
 
     }
