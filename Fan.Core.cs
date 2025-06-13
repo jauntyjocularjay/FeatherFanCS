@@ -104,13 +104,21 @@ namespace DMBTools
         public bool AND() => And();
 
         // @TODO Finish the NAND gate
-        public bool NAnd()
+        public bool NAnd() // NAND: NOT And
         {
             CheckIfEmpty();
-            ...
+            /// ...
             return false;
         }
         public bool NAND() => NAnd();
+
+        public bool NOr() // NOR: Not Or
+        {
+            CheckIfEmpty();
+            // ...
+            return false;
+        }
+        public bool NOR() => NOr();
 
         /// <summary>
         ///     is true if any feather is true.
