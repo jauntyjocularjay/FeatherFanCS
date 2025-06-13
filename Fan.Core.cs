@@ -22,13 +22,32 @@ namespace DMBTools
 
     public partial class Fan
     {
+        /// <summary>
+        /// a List of <see cref="Feather"/> holding key-bool pairs.
+        /// </summary>
         public List<Feather> _feathers;
+        /// <summary>
+        /// Modifies or creates a value within the <see cref="Fan" />
+        /// </summary>
+        /// <param name="name">A unique string to identify the flag.</param>
+        /// <param name="value">A <see cref="bool" /> flag.</param>
         public void Set(string name, bool value)
         {
             Feather match = _feathers.FirstOrDefault<Feather>(feather => feather.key == name);
 
-            if (match != null) match.value = value;
+            if (match != null)
+                match.value = value;
+            else
+                Add(match.key, match.value);
         }
+        /// <summary>
+        /// Getter of the value for the given <see cref="string"/> 
+        /// </summary>
+        /// <param name="name">The identifier to reference.</param>
+        /// <returns>
+        /// the <see cref="bool"/> value associated with the given <see cref="string"/>
+        /// </returns>
+        /// <exception cref="ArgumentException"></exception>
         public bool Get(string name)
         {
             Feather match = _feathers.FirstOrDefault(feather => feather.key == name);
@@ -37,15 +56,28 @@ namespace DMBTools
 
             else throw new ArgumentException($"There is no entry for {name}");
         }
+
+        /// <summary>
+        /// Iterates over each <see cref="Feather"/> 
+        /// </summary>
         public IEnumerable<Feather> All => _feathers;
 
-        public void Add(string key, bool value)
-        {
-            _feathers.Add(new Feather(key, value));
-        }
+        /// <summary>
+        /// Adds a feather to the <see cref="Fan"/> .
+        /// </summary>
+        /// <param name="feather"></param>
         public void Add(Feather feather)
         {
             _feathers.Add(feather);
+        }
+        /// <summary>
+        /// Adds a <see cref="Feather"/> by accepting component values.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void Add(string key, bool value)
+        {
+            _feathers.Add(new Feather(key, value));
         }
 
         /// <summary>
@@ -155,7 +187,12 @@ namespace DMBTools
         /// </remarks>
         public bool XOR() => XOr();
 
-
+        /// <summary>
+        /// returns the value associated with a <see cref="Feather"/> with this identifier.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotPresentException"> thrown when the key is not present.</exception>
         public bool this[string key]
         {
             get
@@ -169,6 +206,12 @@ namespace DMBTools
             }
         }
 
+        /// <summary>
+        /// Returns a feather with the given identifier.
+        /// </summary>
+        /// <param name="key"> a <see cref="string"/> used to identify the value. </param>
+        /// <returns>the <see cref="Feather"/> associated with the key.</returns>
+        /// <exception cref="KeyNotPresentException"></exception>
         public Feather Find(string key)
         {
             for (int i = 0; i < _feathers.Count; i++)
@@ -180,6 +223,11 @@ namespace DMBTools
         }
 
         // @TODO Refactor Subset()
+        /// <summary>
+        /// Creates a Fan from a subset of <see cref="Feather"/>s.
+        /// </summary>
+        /// <param name="names"> An array of strings to identify the desired <see cref="Feather"/>s.</param>
+        /// <returns></returns>
         public Fan Subset(string[] names)
         {
             AllIndicesArePresent(names);
@@ -192,11 +240,19 @@ namespace DMBTools
             return subset;
         }
 
+        /// <summary>
+        /// The number of elements of <see cref="_feathers"/>
+        /// </summary>
+        /// <returns>an <see cref="int"/> with the number of elements contained in the <see cref="Feather"/> </returns>
         public int Count()
         {
             return _feathers.Count();
         }
 
+        /// <summary>
+        /// A <see cref="string"/> illustration of the Fan
+        /// </summary>
+        /// <returns>a <see cref="string"/> illustration of the Fan</returns>
         public override string ToString()
         {
             string str = "{\n";
@@ -212,6 +268,10 @@ namespace DMBTools
         }
 
         // @todo test ToDictionary()
+        /// <summary>
+        /// Generates a dictionary representation of the Fan.
+        /// </summary>
+        /// <returns>a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> representation of the vaues of the <see cref="Fan"/></returns>
         public Dictionary<string, bool> ToDictionary()
         {
             Dictionary<string, bool> result = new Dictionary<string, bool>();
@@ -224,6 +284,10 @@ namespace DMBTools
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<string> Keys()
         {
             List<string> result = new List<string> { };
@@ -235,6 +299,10 @@ namespace DMBTools
 
             return result;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<bool> Values()
         {
             List<bool> result = new List<bool> { };
@@ -247,10 +315,19 @@ namespace DMBTools
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         void CheckIfEmpty()
         {
             if (_feathers.Count == 0) throw new InvalidOperationException("Cannot evaluate an empty train.");
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indices"></param>
+        /// <exception cref="KeyNotPresentException"></exception>
         void AllIndicesArePresent(string[] indices)
         {
             List<string> keys = Keys();
@@ -263,6 +340,11 @@ namespace DMBTools
 
             if (notfound.Count != 0) throw new KeyNotPresentException(notfound);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         bool KeyIsPresent(string key)
         {
             foreach (Feather f in _feathers)
@@ -273,10 +355,24 @@ namespace DMBTools
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class KeyNotPresentException : KeyNotFoundException
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public KeyNotPresentException() { }
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="key"></param>
             public KeyNotPresentException(string key) : base($"{key} is not present in the Train.") { }
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="keys"></param>
             public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this Train.") { }
 
         }
