@@ -6,8 +6,8 @@ This is a data structure dedicated to holding boolean values and allowing you to
 
 Each fan contains a set of feathers consisting of a string key and a boolean value. As an example:
 
-```json
-birdStates =
+```csharp
+Fan birdStates =
 {
     "airbourne": false,
     "hungry": false,
