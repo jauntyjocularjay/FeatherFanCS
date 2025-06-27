@@ -4,15 +4,17 @@ This is a data structure dedicated to holding boolean values and allowing you to
 
 ## Structure
 
-Each fan contains a set of feathers consisting of a string key and a boolean value. As an example, here is a Fan represented in JSON notation:
+Each fan contains a set of feathers consisting of a string key and a boolean value. As an example, here is a Fan represented as a :
 
 ```json
-Fan birdStates =
 {
-    "airbourne": true,
-    "hungry": false,
-    "roosting": false,
-    "mating": false
+    "birdStates" :
+    {
+        "airbourne": true,
+        "hungry": false,
+        "roosting": false,
+        "mating": false
+    }
 }
 ```
 
