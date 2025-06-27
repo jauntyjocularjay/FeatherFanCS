@@ -19,17 +19,17 @@ Fan birdStates =
 You can create subsets of this structure by passing an array of strings that correspond to these states. For example:
 
 ```csharp
-Fan hunting = birdStates.subset("airbourne", "hungry");
+string[] hunting = ["airbourne", "hungry"]
 
 ...
 
 void HuntingOrForaging()
 {
-    if(hunting.AND() && hasTarget)
+    if(birdstate.subset(hunting).AND() && spottedFood)
     {
         Swoop();
     }
-    else if (hunting.XOR())
+    else if (birdstate.subset(hunting).XOR())
     {
         SeekFood();
     }
