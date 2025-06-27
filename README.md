@@ -9,7 +9,7 @@ Each fan contains a set of feathers consisting of a string key and a boolean val
 ```json
 Fan birdStates =
 {
-    "airbourne": false,
+    "airbourne": true,
     "hungry": false,
     "roosting": false,
     "mating": false
