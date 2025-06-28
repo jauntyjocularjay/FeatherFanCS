@@ -38,5 +38,48 @@ void HuntingOrForaging()
 }
 ```
 
+## Logic Gates
+
+### AND
+
+returns true if all feathers are true.
+
+### OR
+
+returns true if at least one feather is true.
+
+### XONE
+
+Returns true iff one feather is true.
+
+### NAND
+
+returns true as long as there as at least one false value of two or greater feathers.
+
+### NOR
+
+returns true iff all values are false
+
+### XOR
+
+returns true when the number of true inputs is odd
+
+### XNOR
+
+returns true if all values are the same
+
+### IMPLY
+
+returns true unless its first argument is true and its second argument is false
+
+### NIMPLY
+
+returns true iff the first argument is true and the second argument is false
+
+
+
+
+
+
 
 

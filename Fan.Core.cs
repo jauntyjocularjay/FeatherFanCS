@@ -122,23 +122,6 @@ namespace DMBTools
         /// </remarks>
         public bool AND() => And();
 
-        // @TODO Finish the NAND gate
-        public bool NAnd() // NAND: NOT And
-        {
-            CheckIfEmpty();
-            /// ...
-            return false;
-        }
-        public bool NAND() => NAnd();
-
-        public bool NOr() // NOR: Not Or
-        {
-            CheckIfEmpty();
-            // ...
-            return false;
-        }
-        public bool NOR() => NOr();
-
         /// <summary>
         ///     is true if any feather is true.
         /// </summary>
@@ -164,6 +147,23 @@ namespace DMBTools
         ///     This is an alias for <see cref="Or()" /> 
         /// </remarks>
         public bool OR() => Or();
+
+        // @TODO Finish the NAND gate
+        public bool NAnd() // NAND: NOT And
+        {
+            CheckIfEmpty();
+            // ...
+            return false;
+        }
+        public bool NAND() => NAnd();
+
+        public bool NOr() // NOR: Not Or
+        {
+            CheckIfEmpty();
+            // ...
+            return false;
+        }
+        public bool NOR() => NOr();
 
         /// <summary>
         ///     XOne() - returns true iff exactly one value in the train is true.
@@ -303,9 +303,9 @@ namespace DMBTools
             return str;
         }
 
-        // @todo test ToDictionary()
         /// <summary>
         /// Generates a dictionary representation of the Fan.
+        /// @todo test ToDictionary()
         /// </summary>
         /// <returns>a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> representation of the vaues of the <see cref="Fan"/></returns>
         public Dictionary<string, bool> ToDictionary()
