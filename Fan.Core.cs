@@ -25,7 +25,18 @@ namespace DMBTools
         /// <summary>
         /// a List of <see cref="Feather"/> holding key-bool pairs.
         /// </summary>
-        public List<Feather> _feathers;
+        public List<Feather> _feathers = new List<Feather>();
+
+        public Fan(string[] keys)
+        {
+            foreach (string key in keys)
+            {
+                Add(key, false);
+            }
+
+        }
+        public Fan(){}
+
         /// <summary>
         /// Modifies or creates a value within the <see cref="Fan" />
         /// </summary>
@@ -78,6 +89,14 @@ namespace DMBTools
         public void Add(string key, bool value)
         {
             _feathers.Add(new Feather(key, value));
+        }
+        /// <summary>
+        /// Adds a <see cref="Feather"/>  with a key and assigns the value to `false`
+        /// </summary>
+        /// <param name="key">string</param>
+        public void Add(string key)
+        {
+            Add(new Feather(key, false));
         }
 
         /// <summary>
@@ -307,7 +326,7 @@ namespace DMBTools
         /// <returns></returns>
         public List<string> Keys()
         {
-            List<string> result = new List<string> { };
+            List<string> result = new List<string>{};
 
             foreach (Feather feather in _feathers)
             {

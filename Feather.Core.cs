@@ -28,7 +28,6 @@ namespace DMBTools
             this.key = key;
             this.value = value;
         }
-
         /// <summary>
         ///     Outputs the value of the  <see cref="Feather"/> as a <see cref="bool" /> and witholds the identifier
         /// </summary>
