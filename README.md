@@ -54,7 +54,7 @@ Returns true iff one feather is true.
 
 ### NAND
 
-returns true as long as there as at least one false value of two or greater feathers.
+returns true as long as there as at least one false of two or more feathers.
 
 ### NOR
 

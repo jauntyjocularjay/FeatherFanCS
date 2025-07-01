@@ -4,29 +4,11 @@ using System.Linq;
 
 namespace DMBTools
 {
-    /// <summary>
-    /// A Train is a sequence of booleans. Think of a "train" of linked states that run along a track.
-    /// In this case, this is taken from a sequence of peacock feathers which are fanned out in a display. Each boolean can be thought of as a "car" or "feather" in the train, indicating an on/off or flag state.
-    /// </summary>
-    /// 
-    /// <remarks>
-    /// Planned:
-    ///  - TODO XOr() method for exclusive-or logic
-    ///  - TODO test NAnd() method
-    ///  - TODO test Or() method
-    ///  - TODO test And() method
-    ///  - TODO test Subset() method
-    ///  - DONE test ToString()
-    ///  - TODO test ToDictionary
-    /// </remarks>
-
     public partial class Fan
     {
-        /// <summary>
-        /// a List of <see cref="Feather"/> holding key-bool pairs.
-        /// </summary>
         public List<Feather> _feathers = new List<Feather>();
 
+        /*** Constructors ***/
         public Fan(string[] keys)
         {
             foreach (string key in keys)
@@ -37,11 +19,15 @@ namespace DMBTools
         }
         public Fan(){}
 
-        /// <summary>
-        /// Modifies or creates a value within the <see cref="Fan" />
-        /// </summary>
-        /// <param name="name">A unique string to identify the flag.</param>
-        /// <param name="value">A <see cref="bool" /> flag.</param>
+        /*** Getters and Setters ***/
+        public bool Get(string name)
+        {
+            Feather match = _feathers.FirstOrDefault(feather => feather.key == name);
+
+            if (match != null) return match.value;
+
+            else throw new ArgumentException($"There is no entry for {name}");
+        }
         public void Set(string name, bool value)
         {
             Feather match = _feathers.FirstOrDefault<Feather>(feather => feather.key == name);
@@ -51,58 +37,25 @@ namespace DMBTools
             else
                 Add(match.key, match.value);
         }
-        /// <summary>
-        /// Getter of the value for the given <see cref="string"/> 
-        /// </summary>
-        /// <param name="name">The identifier to reference.</param>
-        /// <returns>
-        /// the <see cref="bool"/> value associated with the given <see cref="string"/>
-        /// </returns>
-        /// <exception cref="ArgumentException"></exception>
-        public bool Get(string name)
-        {
-            Feather match = _feathers.FirstOrDefault(feather => feather.key == name);
 
-            if (match != null) return match.value;
-
-            else throw new ArgumentException($"There is no entry for {name}");
-        }
-
-        /// <summary>
-        /// Iterates over each <see cref="Feather"/> 
-        /// </summary>
+        /*** Enumeration ***/
         public IEnumerable<Feather> All => _feathers;
 
-        /// <summary>
-        /// Adds a feather to the <see cref="Fan"/> .
-        /// </summary>
-        /// <param name="feather"></param>
+        /*** Adders ***/
         public void Add(Feather feather)
         {
             _feathers.Add(feather);
         }
-        /// <summary>
-        /// Adds a <see cref="Feather"/> by accepting component values.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key, bool value)
         {
             _feathers.Add(new Feather(key, value));
         }
-        /// <summary>
-        /// Adds a <see cref="Feather"/>  with a key and assigns the value to `false`
-        /// </summary>
-        /// <param name="key">string</param>
         public void Add(string key)
         {
             Add(new Feather(key, false));
         }
 
-        /// <summary>
-        ///     is true iff all of its values are true
-        /// </summary>
-        /// <returns>returns true if all values are true, otherwise returns false</returns>
+        /*** Logic Gates ***/
         public bool And()
         {
             CheckIfEmpty();
@@ -116,19 +69,8 @@ namespace DMBTools
             }
             return true;
         }
-        /// <inheritdoc cref="And()" />
-        /// <remarks>
-        ///     This is an alias for <see cref="And()" /> 
-        /// </remarks>
         public bool AND() => And();
 
-        /// <summary>
-        ///     is true if any feather is true.
-        /// </summary>
-        /// <returns>returns true if one value is true, otherwise returns false</returns>
-        /// <exception cref="InvalidOperationException">
-        ///     throws `InvalidOperationException` if the Train is empty.
-        /// </exception>
         public bool Or()
         {
             CheckIfEmpty();
@@ -142,10 +84,6 @@ namespace DMBTools
             }
             return false;
         }
-        /// <inheritdoc cref="Or()" />
-        /// <remarks>
-        ///     This is an alias for <see cref="Or()" /> 
-        /// </remarks>
         public bool OR() => Or();
 
         // @TODO Finish the NAND gate
@@ -165,13 +103,6 @@ namespace DMBTools
         }
         public bool NOR() => NOr();
 
-        /// <summary>
-        ///     XOne() - returns true iff exactly one value in the train is true.
-        ///     XOne is better known as 'one-hot' or 'exactly one'.
-        /// </summary>
-        /// <returns>
-        ///     `true` iff one value in the train is true, otherwise `false`
-        /// </returns>
         public bool XOne()
         {
             int has_true = 0;
@@ -187,23 +118,11 @@ namespace DMBTools
             return has_true == 1;
         }
 
-        /// <summary>
-        ///     XOr - With two inputs, XOR is true iff the inputs differ 
-        ///     (one is true, one is false). With multiple inputs, XOR is true iff 
-        ///     the number of true inputs is odd.
-        /// </summary>
-        /// <returns>
-        ///     `true` when the number of true inputs is odd. Otherwise, returns `false`.
-        ///     For a 'one-hot' or 'exactly-one' test, use XOne()
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        ///     Throws `InvalidOperationException` when there are one or fewer values to evaluate.
-        /// </exception>
         public bool XOr()
         {
             if (Count() < 2) throw new InvalidOperationException
             (
-                $"XOr() requires at least 2 booleans in the Train."
+                $"XOr() requires at least 2 booleans in the Fan."
             );
 
             int has_true = 0;
@@ -217,18 +136,46 @@ namespace DMBTools
 
             return has_true % 2 != 0;
         }
-        /// <inheritdoc cref="XOr()" />
-        /// <remarks>
-        ///     This is an alias for <see cref="XOr()" /> 
-        /// </remarks>
         public bool XOR() => XOr();
 
-        /// <summary>
-        /// returns the value associated with a <see cref="Feather"/> with this identifier.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotPresentException"> thrown when the key is not present.</exception>
+        public bool XNor(bool vacuous = false)
+        {
+            bool control;
+
+            if (vacuous)
+            {
+                return VacuouslyTrue();
+            }
+            else
+            {
+                CheckIfEmpty();
+            }
+
+            control = _feathers[0].value;
+
+            for (int i = 1; i < _feathers.Count; i++)
+            {
+                if (_feathers[i].value != control) return false;
+            }
+
+            return true;
+        }
+        public bool XNOR(bool vacuous = false) => XNor(vacuous);
+
+
+        public bool Imply()
+        {
+            throw new NotImplementedException();
+        }
+        public bool IMPLY() => Imply();
+
+        public bool NImply()
+        {
+            throw new NotImplementedException();
+        }
+        public bool NIMPLY() => NImply();
+
+        /*** Indexer ***/
         public bool this[string key]
         {
             get
@@ -242,12 +189,21 @@ namespace DMBTools
             }
         }
 
-        /// <summary>
-        /// Returns a feather with the given identifier.
-        /// </summary>
-        /// <param name="key"> a <see cref="string"/> used to identify the value. </param>
-        /// <returns>the <see cref="Feather"/> associated with the key.</returns>
-        /// <exception cref="KeyNotPresentException"></exception>
+        /*** Helper Functions ***/
+        public bool VacuouslyTrue()
+        {
+            if (_feathers.Count == 0) return true;
+            else return false;
+        }
+
+        public bool VacuouslyFalse()
+        {
+            if (_feathers.Count == 0)
+                return false;
+            else
+                return true;
+        }
+
         public Feather Find(string key)
         {
             for (int i = 0; i < _feathers.Count; i++)
@@ -258,12 +214,6 @@ namespace DMBTools
             throw new KeyNotPresentException(key);
         }
 
-        // @TODO Refactor Subset()
-        /// <summary>
-        /// Creates a Fan from a subset of <see cref="Feather"/>s.
-        /// </summary>
-        /// <param name="names"> An array of strings to identify the desired <see cref="Feather"/>s.</param>
-        /// <returns></returns>
         public Fan Subset(string[] names)
         {
             AllIndicesArePresent(names);
@@ -276,19 +226,11 @@ namespace DMBTools
             return subset;
         }
 
-        /// <summary>
-        /// The number of elements of <see cref="_feathers"/>
-        /// </summary>
-        /// <returns>an <see cref="int"/> with the number of elements contained in the <see cref="Feather"/> </returns>
         public int Count()
         {
             return _feathers.Count();
         }
 
-        /// <summary>
-        /// A <see cref="string"/> illustration of the Fan
-        /// </summary>
-        /// <returns>a <see cref="string"/> illustration of the Fan</returns>
         public override string ToString()
         {
             string str = "{\n";
@@ -303,11 +245,6 @@ namespace DMBTools
             return str;
         }
 
-        /// <summary>
-        /// Generates a dictionary representation of the Fan.
-        /// @todo test ToDictionary()
-        /// </summary>
-        /// <returns>a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> representation of the vaues of the <see cref="Fan"/></returns>
         public Dictionary<string, bool> ToDictionary()
         {
             Dictionary<string, bool> result = new Dictionary<string, bool>();
@@ -320,10 +257,6 @@ namespace DMBTools
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<string> Keys()
         {
             List<string> result = new List<string>{};
@@ -335,10 +268,6 @@ namespace DMBTools
 
             return result;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<bool> Values()
         {
             List<bool> result = new List<bool> { };
@@ -351,19 +280,11 @@ namespace DMBTools
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
+        /*** Verifiers ***/
         void CheckIfEmpty()
         {
             if (_feathers.Count == 0) throw new InvalidOperationException("Cannot evaluate an empty train.");
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="indices"></param>
-        /// <exception cref="KeyNotPresentException"></exception>
         void AllIndicesArePresent(string[] indices)
         {
             List<string> keys = Keys();
@@ -376,11 +297,6 @@ namespace DMBTools
 
             if (notfound.Count != 0) throw new KeyNotPresentException(notfound);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         bool KeyIsPresent(string key)
         {
             foreach (Feather f in _feathers)
@@ -391,26 +307,12 @@ namespace DMBTools
             return false;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /*** Exceptions ***/
         public class KeyNotPresentException : KeyNotFoundException
         {
-            /// <summary>
-            /// 
-            /// </summary>
             public KeyNotPresentException() { }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="key"></param>
-            public KeyNotPresentException(string key) : base($"{key} is not present in the Train.") { }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="keys"></param>
-            public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this Train.") { }
-
+            public KeyNotPresentException(string key) : base($"{key} is not present in the Fan.") { }
+            public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this Fan.") { }
         }
 
     }

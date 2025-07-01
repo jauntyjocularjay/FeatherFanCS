@@ -1,0 +1,209 @@
+    /// <summary>
+    /// A Train is a sequence of booleans. Think of a "train" of linked states that run along a track.
+    /// In this case, this is taken from a sequence of peacock feathers which are fanned out in a display. Each boolean can be thought of as a "car" or "feather" in the train, indicating an on/off or flag state.
+    /// </summary>
+    /// 
+    /// <remarks>
+    /// Planned:
+    ///  - TODO XOr() method for exclusive-or logic
+    ///  - TODO test NAnd() method
+    ///  - TODO test Or() method
+    ///  - TODO test And() method
+    ///  - TODO test Subset() method
+    ///  - DONE test ToString()
+    ///  - TODO test ToDictionary
+    /// </remarks>
+
+
+        /// <summary>
+        /// a List of <see cref="Feather"/> holding key-bool pairs.
+        /// </summary>
+
+
+
+        <summary>
+        Modifies or creates a value within the <see cref="Fan" />
+        </summary>
+        <param name="name">A unique string to identify the flag.</param>
+        <param name="value">A <see cref="bool" /> flag.</param>
+
+        <summary>
+        Getter of the value for the given <see cref="string"/> 
+        </summary>
+        <param name="name">The identifier to reference.</param>
+        <returns>
+        the <see cref="bool"/> value associated with the given <see cref="string"/>
+        </returns>
+        <exception cref="ArgumentException"></exception>
+ 
+        <summary>
+            IEnumerable<Feather>
+        Iterates over each <see cref="Feather"/> 
+        </summary>
+
+
+        <summary> Add()
+        Adds a feather to the <see cref="Fan"/> .
+        </summary>
+        <param name="feather"></param>
+        <summary>
+        Adds a <see cref="Feather"/> by accepting component values.
+        </summary>
+        <param name="key"></param>
+        <param name="value"></param>
+        <summary>
+        Adds a <see cref="Feather"/>  with a key and assigns the value to `false`
+        </summary>
+        <param name="key">string</param>
+
+
+        <summary>
+            AND(bool vacuous) is true iff all of its values are true
+        </summary>
+        <returns>
+            returns true if all values are true, otherwise returns false;
+            vacuously false;
+        </returns>
+        <inheritdoc cref="And" />
+        <remarks>
+            This is an alias for <see cref="And" /> 
+        </remarks>
+
+        <summary>
+            OR() is true if any feather is true.
+        </summary>
+        <returns>returns true if one value is true, otherwise returns false</returns>
+        <exception cref="InvalidOperationException">
+            throws `InvalidOperationException` if the Train is empty.
+        </exception>
+        <inheritdoc cref="Or()" />
+        <remarks>
+            This is an alias for <see cref="Or()" /> 
+        </remarks>
+
+
+
+        <summary>
+            XOne() - returns true iff exactly one value in the train is true.
+            XOne is better known as 'one-hot' or 'exactly one'.
+        </summary>
+        <returns>
+            `true` iff one value in the train is true, otherwise `false`
+        </returns>
+
+        <summary>
+            XOr() - With two inputs, XOR is true iff the inputs differ 
+            (one is true, one is false). With multiple inputs, XOR is true iff 
+            the number of true inputs is odd.
+        </summary>
+        <returns>
+            `true` when the number of true inputs is odd. Otherwise, returns `false`.
+            For a 'one-hot' or 'exactly-one' test, use XOne()
+        </returns>
+        <exception cref="InvalidOperationException">
+            Throws `InvalidOperationException` when there are one or fewer values to evaluate.
+        </exception>
+        <inheritdoc cref="XOr()" />
+        <remarks>
+            This is an alias for <see cref="XOr()" /> 
+        </remarks>
+
+        <summary>
+            XNor - is true iff every value is the same.
+        </summary>
+        <param name="vacuous">
+            optional: Indicates returning a vacuous result. `false` by default.
+        </param>
+        <returns>
+            by default, `true` when the every input is the same, otherwise returns `false`.
+            if vacuous, returns true when the `Fan` is empty.
+        </returns>
+        <inheritdoc cref="XNor" />
+        <remarks>
+            This is an alias for <see cref="XNor" /> 
+        </remarks>
+
+
+        <section>
+            <h1>Indexer</h1>
+        <summary>
+        indexer - returns the value associated with a <see cref="Feather"/> with this identifier.
+        </summary>
+        <param name="key"></param>
+        <returns></returns>
+        <exception cref="KeyNotPresentException"> thrown when the key is not present.</exception>
+        </section>
+
+
+        <section>
+            <h1>Helper Methods</h1>
+
+
+            <summary>
+            Returns a feather with the given identifier.
+            </summary>
+            <param name="key"> a <see cref="string"/> used to identify the value. </param>
+            <returns>the <see cref="Feather"/> associated with the key.</returns>
+            <exception cref="KeyNotPresentException"></exception>
+
+            // @TODO Refactor Subset()
+            <summary>
+            Creates a Fan from a subset of <see cref="Feather"/>s.
+            </summary>
+            <param name="names"> An array of strings to identify the desired <see cref="Feather"/>s.</param>
+            <returns></returns>
+
+            <summary>
+            The number of elements of <see cref="_feathers"/>
+            </summary>
+            <returns>an <see cref="int"/> with the number of elements contained in the <see cref="Feather"/> </returns>
+
+            <summary>
+            A <see cref="string"/> illustration of the Fan
+            </summary>
+            <returns>a <see cref="string"/> illustration of the Fan</returns>
+
+            <summary>
+            ToDictionary() generates a dictionary representation of the Fan.
+            @todo test ToDictionary()
+            </summary>
+            <returns>a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> representation of the vaues of the <see cref="Fan"/></returns>
+
+            <summary>
+            Keys()
+            </summary>
+            <returns></returns>
+            <summary>
+            Values()
+            </summary>
+            <returns></returns>
+
+
+            <summary>
+            CheckIfEmpty()
+            </summary>
+            <exception cref="InvalidOperationException"></exception>
+
+            <summary>
+            AllIndicesArePresent
+            </summary>
+            <param name="indices"></param>
+            <exception cref="KeyNotPresentException"></exception>
+
+            <summary>
+            KeyIsPresent(string key)
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+
+        </section>
+
+        <section>
+            <h1>Exceptions</h1>
+
+
+            <summary>
+            KeyNotPresentException extends KeyNotFoundException
+            </summary>
+
+        </section>
