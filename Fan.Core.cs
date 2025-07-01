@@ -8,16 +8,27 @@ namespace DMBTools
     {
         public List<Feather> _feathers = new List<Feather>();
 
+
+
         /*** Constructors ***/
+        public Fan()
+        { }
         public Fan(string[] keys)
         {
             foreach (string key in keys)
             {
                 Add(key, false);
             }
-
         }
-        public Fan(){}
+        public Fan(List<string> keys)
+        {
+            foreach (string key in keys)
+            {
+                Add(key, false);
+            }
+        }
+
+
 
         /*** Getters and Setters ***/
         public bool Get(string name)
@@ -38,6 +49,8 @@ namespace DMBTools
                 Add(match.key, match.value);
         }
 
+
+
         /*** Enumeration ***/
         public IEnumerable<Feather> All => _feathers;
 
@@ -55,88 +68,123 @@ namespace DMBTools
             Add(new Feather(key, false));
         }
 
+
+
         /*** Logic Gates ***/
-        public bool And()
+        public bool And(bool vacuous = false)
         {
-            CheckIfEmpty();
-
-            foreach (Feather pair in _feathers)
+            if (vacuous)
             {
-                if (!pair.value)
-                {
-                    return false;
-                }
+                return VacuouslyFalse();
             }
-            return true;
-        }
-        public bool AND() => And();
+            else
+            {
+                CheckIfEmpty();
 
-        public bool Or()
+                foreach (Feather pair in _feathers)
+                {
+                    if (!pair.value)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        public bool AND(bool vacuous = false) => And(vacuous);
+
+        public bool Or(bool vacuous = false)
         {
-            CheckIfEmpty();
-
-            foreach (Feather pair in _feathers)
+            if (vacuous)
             {
-                if (pair.value)
-                {
-                    return true;
-                }
+                return VacuouslyFalse();
             }
-            return false;
+            else
+            {
+                CheckIfEmpty();
+
+                foreach (Feather pair in _feathers)
+                {
+                    if (pair.value)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
-        public bool OR() => Or();
+        public bool OR(bool vacuous = false) => Or(vacuous);
 
         // @TODO Finish the NAND gate
         public bool NAnd() // NAND: NOT And
         {
             CheckIfEmpty();
-            // ...
-            return false;
+            throw new NotImplementedException();
         }
         public bool NAND() => NAnd();
 
         public bool NOr() // NOR: Not Or
         {
             CheckIfEmpty();
-            // ...
-            return false;
+            throw new NotImplementedException();
         }
         public bool NOR() => NOr();
 
-        public bool XOne()
+        public bool XOne(bool vacuous)
         {
-            int has_true = 0;
-
-            foreach (Feather pair in _feathers)
+            if (vacuous)
             {
-                if (pair.value == true)
-                {
-                    has_true++;
-                }
+                return VacuouslyFalse();
             }
+            else
+            {
+                int has_true = 0;
 
-            return has_true == 1;
+                foreach (Feather pair in _feathers)
+                {
+                    if (pair.value == true)
+                    {
+                        has_true++;
+                    }
+                }
+
+                return has_true == 1;
+            }
         }
 
-        public bool XOr()
+        public bool XOr(bool vacuous)
         {
-            if (Count() < 2) throw new InvalidOperationException
-            (
-                $"XOr() requires at least 2 booleans in the Fan."
-            );
-
-            int has_true = 0;
-            foreach (var pair in _feathers)
+            if (vacuous && _feathers.Count == 1 && _feathers[0])
             {
-                if (pair.value == true)
-                {
-                    has_true++;
-                }
+                return true; // TODO test
             }
+            else if (vacuous && _feathers.Count == 1 && !_feathers[0])
+            {
+                return false; // TODO test
+            }
+            else if (vacuous && _feathers.Count == 0)
+            {
+                return VacuouslyFalse();
+            }
+            else if (!vacuous && Count() < 2)
+            {
+                throw new InvalidOperationException($"XOr() requires at least 2 booleans.");
+            }
+            else
+            {
+                int true_value_count = 0;
+                foreach (var pair in _feathers)
+                {
+                    if (pair.value == true)
+                    {
+                        true_value_count++;
+                    }
+                }
 
-            return has_true % 2 != 0;
+                return true_value_count % 2 != 0;
+            }
         }
-        public bool XOR() => XOr();
+        public bool XOR(bool vacuous) => XOr(vacuous);
 
         public bool XNor(bool vacuous = false)
         {
@@ -165,12 +213,14 @@ namespace DMBTools
 
         public bool Imply()
         {
+            if (_feathers.Count != 2) { throw new InvalidImplicationException("Imply"); }
             throw new NotImplementedException();
         }
         public bool IMPLY() => Imply();
 
         public bool NImply()
         {
+            if (_feathers.Count != 2) { throw new InvalidImplicationException("NImply"); }
             throw new NotImplementedException();
         }
         public bool NIMPLY() => NImply();
@@ -198,10 +248,8 @@ namespace DMBTools
 
         public bool VacuouslyFalse()
         {
-            if (_feathers.Count == 0)
-                return false;
-            else
-                return true;
+            if (_feathers.Count == 0) return false;
+            else return true;
         }
 
         public Feather Find(string key)
@@ -210,7 +258,6 @@ namespace DMBTools
             {
                 if (_feathers[i].key == key) return _feathers[i];
             }
-
             throw new KeyNotPresentException(key);
         }
 
@@ -219,6 +266,19 @@ namespace DMBTools
             AllIndicesArePresent(names);
 
             Fan subset = new Fan();
+
+            foreach (string name in names)
+            {
+                subset._feathers.Add(new Feather(name, this[name]));
+            }
+            return subset;
+        }
+        public Fan Subset(List<string> names)
+        {
+            AllIndicesArePresent(names);
+
+            Fan subset = new Fan();
+
             foreach (string name in names)
             {
                 subset._feathers.Add(new Feather(name, this[name]));
@@ -259,7 +319,7 @@ namespace DMBTools
 
         public List<string> Keys()
         {
-            List<string> result = new List<string>{};
+            List<string> result = new List<string> { };
 
             foreach (Feather feather in _feathers)
             {
@@ -285,7 +345,8 @@ namespace DMBTools
         {
             if (_feathers.Count == 0) throw new InvalidOperationException("Cannot evaluate an empty train.");
         }
-        void AllIndicesArePresent(string[] indices)
+
+        void AllIndicesArePresent(List<string> indices)
         {
             List<string> keys = Keys();
             List<string> notfound = new List<string>();
@@ -297,6 +358,11 @@ namespace DMBTools
 
             if (notfound.Count != 0) throw new KeyNotPresentException(notfound);
         }
+        void AllIndicesArePresent(string[] indices)
+        {
+            AllIndicesArePresent(new List<string>(indices));
+        }
+
         bool KeyIsPresent(string key)
         {
             foreach (Feather f in _feathers)
@@ -313,6 +379,10 @@ namespace DMBTools
             public KeyNotPresentException() { }
             public KeyNotPresentException(string key) : base($"{key} is not present in the Fan.") { }
             public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this Fan.") { }
+        }
+        public class InvalidImplicationException : InvalidOperationException
+        {
+            public InvalidImplicationException(string implication) : base($"{implication}() requires exactly 2 values.") {}
         }
 
     }
