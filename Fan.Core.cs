@@ -11,8 +11,7 @@ namespace DMBTools
 
 
         /*** Constructors ***/
-        public Fan()
-        { }
+        public Fan() { }
         public Fan(string[] keys)
         {
             foreach (string key in keys)
@@ -54,6 +53,8 @@ namespace DMBTools
         /*** Enumeration ***/
         public IEnumerable<Feather> All => _feathers;
 
+
+
         /*** Adders ***/
         public void Add(Feather feather)
         {
@@ -71,9 +72,9 @@ namespace DMBTools
 
 
         /*** Logic Gates ***/
-        public bool And(bool vacuous = false)
+        public bool And(bool vacuous_result = false)
         {
-            if (vacuous)
+            if (vacuous_result)
             {
                 return VacuouslyFalse();
             }
@@ -91,11 +92,11 @@ namespace DMBTools
                 return true;
             }
         }
-        public bool AND(bool vacuous = false) => And(vacuous);
+        public bool AND(bool vacuous_result = false) => And(vacuous_result);
 
-        public bool Or(bool vacuous = false)
+        public bool Or(bool vacuous_result = false)
         {
-            if (vacuous)
+            if (vacuous_result)
             {
                 return VacuouslyFalse();
             }
@@ -113,26 +114,47 @@ namespace DMBTools
                 return false;
             }
         }
-        public bool OR(bool vacuous = false) => Or(vacuous);
+        public bool OR(bool vacuous_result = false) => Or(vacuous_result);
 
         // @TODO Finish the NAND gate
-        public bool NAnd() // NAND: NOT And
+        public bool NAnd(bool vacuous_result = false) // NAND: NOT And
         {
-            CheckIfEmpty();
+            if (vacuous_result)
+            {
+                VacuouslyTrue();
+            }
+            else
+            {
+                CheckIfEmpty();
+
+                return !this.And();
+            }
+
+
+
+
             throw new NotImplementedException();
         }
         public bool NAND() => NAnd();
 
-        public bool NOr() // NOR: Not Or
+        public bool NOr(bool vacuous_result = false) // NOR: Not Or
         {
-            CheckIfEmpty();
+            if (vacuous_result)
+            {
+                return VacuouslyFalse();
+            }
+            else
+            {
+                CheckIfEmpty();
+                return !this.Or();
+            }
             throw new NotImplementedException();
         }
         public bool NOR() => NOr();
 
-        public bool XOne(bool vacuous)
+        public bool XOne(bool vacuous_result)
         {
-            if (vacuous)
+            if (vacuous_result)
             {
                 return VacuouslyFalse();
             }
@@ -152,21 +174,21 @@ namespace DMBTools
             }
         }
 
-        public bool XOr(bool vacuous)
+        public bool XOr(bool vacuous_result)
         {
-            if (vacuous && _feathers.Count == 1 && _feathers[0])
+            if (vacuous_result && _feathers.Count == 1 && _feathers[0])
             {
                 return true; // TODO test
             }
-            else if (vacuous && _feathers.Count == 1 && !_feathers[0])
+            else if (vacuous_result && _feathers.Count == 1 && !_feathers[0])
             {
                 return false; // TODO test
             }
-            else if (vacuous && _feathers.Count == 0)
+            else if (vacuous_result && _feathers.Count == 0)
             {
                 return VacuouslyFalse();
             }
-            else if (!vacuous && Count() < 2)
+            else if (!vacuous_result && Count() < 2)
             {
                 throw new InvalidOperationException($"XOr() requires at least 2 booleans.");
             }
@@ -184,13 +206,13 @@ namespace DMBTools
                 return true_value_count % 2 != 0;
             }
         }
-        public bool XOR(bool vacuous) => XOr(vacuous);
+        public bool XOR(bool vacuous_result) => XOr(vacuous_result);
 
-        public bool XNor(bool vacuous = false)
+        public bool XNor(bool vacuous_result = false)
         {
             bool control;
 
-            if (vacuous)
+            if (vacuous_result)
             {
                 return VacuouslyTrue();
             }
@@ -208,7 +230,7 @@ namespace DMBTools
 
             return true;
         }
-        public bool XNOR(bool vacuous = false) => XNor(vacuous);
+        public bool XNOR(bool vacuous_result = false) => XNor(vacuous_result);
 
 
         public bool Imply()
@@ -317,6 +339,19 @@ namespace DMBTools
             return result;
         }
 
+        public int IndexOf(string key)
+        {
+            for (int i = 0; i < _feathers.Count; i++)
+            {
+                if (_feathers[i].key == key)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         public List<string> Keys()
         {
             List<string> result = new List<string> { };
@@ -382,7 +417,7 @@ namespace DMBTools
         }
         public class InvalidImplicationException : InvalidOperationException
         {
-            public InvalidImplicationException(string implication) : base($"{implication}() requires exactly 2 values.") {}
+            public InvalidImplicationException(string implication) : base($"{implication}() requires exactly 2 values.") { }
         }
 
     }
