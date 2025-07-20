@@ -6,6 +6,7 @@ namespace DMBTools
 {
     public partial class Fan
     {
+        readonly static string Class = "Fan";
         public List<Feather> _feathers = new List<Feather>();
 
 
@@ -280,7 +281,10 @@ namespace DMBTools
             {
                 if (_feathers[i].key == key) return _feathers[i];
             }
-            throw new KeyNotPresentException(key);
+
+            Console.WriteLine($"WARNING:{key} does not appear in this {Fan.Class}");
+
+            return null;
         }
 
         public Fan Subset(string[] names)
@@ -378,7 +382,7 @@ namespace DMBTools
         /*** Verifiers ***/
         void CheckIfEmpty()
         {
-            if (_feathers.Count == 0) throw new InvalidOperationException("Cannot evaluate an empty train.");
+            if (_feathers.Count == 0) throw new InvalidOperationException($"Cannot evaluate an empty {Fan.Class}.");
         }
 
         void AllIndicesArePresent(List<string> indices)
@@ -412,8 +416,8 @@ namespace DMBTools
         public class KeyNotPresentException : KeyNotFoundException
         {
             public KeyNotPresentException() { }
-            public KeyNotPresentException(string key) : base($"{key} is not present in the Fan.") { }
-            public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this Fan.") { }
+            public KeyNotPresentException(string key) : base($"{key} is not present in the {Fan.Class}.") { }
+            public KeyNotPresentException(List<string> keys) : base($"The keys {keys} are not present in this {Fan.Class}.") { }
         }
         public class InvalidImplicationException : InvalidOperationException
         {
