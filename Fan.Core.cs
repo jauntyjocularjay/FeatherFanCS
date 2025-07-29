@@ -117,6 +117,26 @@ namespace DMBTools
         }
         public bool OR(bool vacuous_result = false) => Or(vacuous_result);
 
+        public bool Not(bool vacuous_result = false)
+        {
+            if (vacuous_result)
+            {
+                return VacuouslyTrue();
+            }
+            else
+            {
+                CheckIfEmpty();
+
+                foreach (Feather pair in _feathers)
+                {
+                    if (pair.value) return false;
+                }
+
+                return true;
+            }
+        }
+        public bool NOT(bool vacuous_result = false) => Not(vacuous_result);
+
         // @TODO Finish the NAND gate
         public bool NAnd(bool vacuous_result = false) // NAND: NOT And
         {
