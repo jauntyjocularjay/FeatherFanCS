@@ -151,9 +151,6 @@ namespace DMBTools
                 return !this.And();
             }
 
-
-
-
             throw new NotImplementedException();
         }
         public bool NAND() => NAnd();
@@ -252,7 +249,6 @@ namespace DMBTools
             return true;
         }
         public bool XNOR(bool vacuous_result = false) => XNor(vacuous_result);
-
 
         public bool Imply()
         {
