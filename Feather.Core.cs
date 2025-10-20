@@ -28,6 +28,9 @@ namespace DMBTools
             this.key = key;
             this.value = value;
         }
+
+        public Feather(string key) : this(key, false) { }
+
         /// <summary>
         ///     Outputs the value of the  <see cref="Feather"/> as a <see cref="bool" /> and witholds the identifier
         /// </summary>
